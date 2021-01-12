@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { max, scaleBand, scaleLinear, select, Selection } from 'd3';
+import { easeElastic, max, scaleBand, scaleLinear, select, Selection } from 'd3';
 import randomstring from 'randomstring'
 
 
@@ -72,10 +72,16 @@ function Chapter5() {
         .enter()
         .append('rect')
         .attr('width', x.bandwidth)
-        .attr('height', d => dimensions.height - y(d.units))
-        .attr('x', d => x(d.name)!)
-        .attr('y', d => y(d.units))
         .attr('fill', 'orange')
+        .attr('x', d => x(d.name)!)
+        .attr('height', 0)
+        .attr('y', dimensions.height)
+        .transition()
+        .duration(500)
+        .delay((_, i) => i * 100)
+        .ease(easeElastic)
+        .attr('height', d => dimensions.height - y(d.units))
+        .attr('y', d => y(d.units))
     }
     // eslint-disable-next-line
   }, [selection])
@@ -97,9 +103,15 @@ function Chapter5() {
 
       rects
         .exit()
+        .transition()
+        .duration(300)
+        .attr('height', 0)
+        .attr('y', dimensions.height)
         .remove()
 
       rects
+        .transition()
+        .duration(300)
         .attr('width', x.bandwidth)
         .attr('height', d => dimensions.height - y(d.units))
         .attr('x', d => x(d.name)!)
@@ -110,10 +122,16 @@ function Chapter5() {
         .enter()
         .append('rect')
         .attr('width', x.bandwidth)
-        .attr('height', d => dimensions.height - y(d.units))
         .attr('x', d => x(d.name)!)
-        .attr('y', d => y(d.units))
         .attr('fill', 'orange')
+        .attr('height', 0)
+        .attr('y', dimensions.height)
+        .transition()
+        .duration(500)
+        .ease(easeElastic)
+        .delay(200)
+        .attr('height', d => dimensions.height - y(d.units))
+        .attr('y', d => y(d.units))
     }
   }, [data])
 
